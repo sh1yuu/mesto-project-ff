@@ -1,6 +1,6 @@
 export { cardDelete, cardsLike, cardsAdd }
 import { popupOpen, popupClose, popupCloseEsc, popupCloseOverlay } from './modal.js';
-import { cardTemplate, placesList, popupAll, popupModalTypeImage, popupImage, popupCaption, profileAddButton, popupCloseButtons, profileEditButton, popupEditProfile, popupNewCard, formEditProfile, formCardAdd, formElement, nameInput, jobInput, cardFullscreen, handleFormCardSubmit } from './index.js';
+import { cardTemplate, placesList, popupAll, popupModalTypeImage, popupImage, popupCardCaption, profileAddButton, popupCloseButtons, profileEditButton, popupEditProfile, popupNewCard, formEditProfile, formCardAdd, nameInput, jobInput, cardFullscreen, handleFormCardSubmit } from './index.js';
 
 // @todo: Функция создания карточки
 function cardsAdd(name, link, cardDeleteClbk, cardsLikeClbk, cardFullscreenClbk) {
