@@ -1,0 +1,23 @@
+.profile__image_edit-button {
+  display: block;
+  position: absolute;
+  border: none;
+  background: transparent;
+  width: 120px;
+  height: 120px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  transition: .3s
+}
+
+.profile__image_edit-button:hover {
+  background: rgba(0, 0, 0, 0.80);
+  background-image: url('../../../images/edit-icon.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: .3s;
+}

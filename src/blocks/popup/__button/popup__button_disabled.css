@@ -1,0 +1,14 @@
+.popup__button_disabled {
+  opacity: 20%;
+  background:inherit;
+  pointer-events: none;
+  color: #000;
+  border: 1px solid #000;
+}
+
+@media screen and (max-width: 568px) {
+  .popup__button_disabled {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}

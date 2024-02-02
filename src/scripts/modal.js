@@ -9,7 +9,7 @@ function popupOpen (popup) {
 // @todo: Функция закрытия модального окна
 function popupClose (popup) {
   popup.classList.remove('popup_is-opened');
-  document.removeEventListener('keydown', popupCloseEsc)
+  document.removeEventListener('keydown', popupCloseEsc);
 }
 
 // @todo: Функция закрытия модального окна кликом на оверлей
