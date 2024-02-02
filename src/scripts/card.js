@@ -37,10 +37,10 @@ function cardDelete(card, id) {
 // @todo: Функция лайка карточки
 function cardsLike (likeButton, cardId, card, like) {
   if (!likeButton.classList.contains('card__like-button_is-active')) {
-    putLike(cardId)
+    putLike(cardId).then(card => like.textContent = card.likes.length);
     likeButton.classList.add('card__like-button_is-active');
   } else if (likeButton.classList.contains('card__like-button_is-active')) {
-    deleteLike(cardId)
+    deleteLike(cardId).then(card => like.textContent = card.likes.length);
     likeButton.classList.remove('card__like-button_is-active');
   }
 }

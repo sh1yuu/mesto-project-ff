@@ -1,4 +1,5 @@
 export { popupOpen, popupClose, popupCloseEsc, popupCloseOverlay }
+import { checkInputValidity, enableValidation, hasInvalidInput, hideInputError, clearValidation, showInputError, toggleButtonState, validationConfig } from './validation.js'
 
 // @todo: Фукция открытия модального окна
 function popupOpen (popup) {

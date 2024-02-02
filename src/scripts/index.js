@@ -150,13 +150,14 @@ function handleFormCardSubmit (evt) {
 profileEditButton.addEventListener('click', () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
-  clearValidation(formEditProfile, validationConfig);
   enableValidation(validationConfig);
+  clearValidation(formEditProfile, validationConfig);
   popupOpen(popupEditProfile);
 });
 
 profileAddButton.addEventListener('click', () => {
   formCardAdd.reset();
+  clearValidation(formCardAdd, validationConfig)
   enableValidation(validationConfig);
   clearValidation(formCardAdd, validationConfig);
   popupOpen(popupNewCard);
