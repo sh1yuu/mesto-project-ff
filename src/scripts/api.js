@@ -6,17 +6,20 @@ const config = {
   }
 }
 
+const checkResponse = (res) => {
+  if (res.ok) {
+    return res.json()
+  }
+
+  return Promise.reject(`Ошибка: ${res.status}`)
+}
+
+
 export const userInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`)
-  })
+  .then(checkResponse)
 }
 
 export const getInitialCards = () => {
@@ -24,13 +27,7 @@ export const getInitialCards = () => {
     method: 'GET',
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
+  .then(checkResponse)
 }
 
 export const profileEdit = (profile) => {
@@ -42,13 +39,7 @@ export const profileEdit = (profile) => {
       about: profile.about
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
+  .then(checkResponse)
 }
 
 export const apiCardAdd = (newCard) => {
@@ -61,13 +52,7 @@ export const apiCardAdd = (newCard) => {
       likes: newCard.likes
     })
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
+  .then(checkResponse)
 }
 
 export const updatingUserAvatar = (link) => {
@@ -78,13 +63,7 @@ export const updatingUserAvatar = (link) => {
       avatar: link.avatar
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-  
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+  .then(checkResponse)
 }
 
 export const apiCardDelete = (id) => {
@@ -92,13 +71,7 @@ export const apiCardDelete = (id) => {
     method: 'DELETE',
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
+  .then(checkResponse)
 }
 
 export const putLike = (id) => {
@@ -106,13 +79,7 @@ export const putLike = (id) => {
     method: 'PUT',
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
+  .then(checkResponse)
 }
 
 export const deleteLike = (id) => {
@@ -120,11 +87,5 @@ export const deleteLike = (id) => {
     method: 'DELETE',
     headers: config.headers
   })
-  .then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status}`);
-  })
+  .then(checkResponse)
 }

@@ -1,6 +1,3 @@
-export { popupOpen, popupClose, popupCloseEsc, popupCloseOverlay }
-import { checkInputValidity, enableValidation, hasInvalidInput, hideInputError, clearValidation, showInputError, toggleButtonState, validationConfig } from './validation.js'
-
 // @todo: Фукция открытия модального окна
 function popupOpen (popup) {
   popup.classList.add('popup_is-opened');
@@ -28,3 +25,5 @@ function popupCloseEsc (evt) {
     popupClose(popup);
   }
 }
+
+export { popupOpen, popupClose, popupCloseEsc, popupCloseOverlay }

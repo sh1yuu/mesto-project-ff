@@ -1,5 +1,3 @@
-export { checkInputValidity, enableValidation, hasInvalidInput, hideInputError, clearValidation, showInputError, toggleButtonState, validationConfig };
-
 const validationConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -79,3 +77,5 @@ function enableValidation(validationConfig) {
     clearValidation(formElement, validationConfig);
   })
 }
+
+export { checkInputValidity, enableValidation, hasInvalidInput, hideInputError, clearValidation, showInputError, toggleButtonState, validationConfig };

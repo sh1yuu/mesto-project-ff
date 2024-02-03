@@ -1,10 +1,8 @@
-export { cardFullscreen, cardTemplate, formCardAdd, formEditProfile, handleFormCardSubmit, jobInput, nameInput, placesList, popupAll, popupCardCaption, popupCloseButtons, popupEditProfile, popupImage, popupModalTypeImage, popupNewCard, profileAddButton, profileEditButton };
-  import '../pages/index.css';
-  import { cardDelete, cardsAdd, cardsLike } from './card.js';
-  import { initialCards } from './cards.js';
-  import { popupClose, popupCloseEsc, popupCloseOverlay, popupOpen } from './modal.js';
-  import { showInputError, hideInputError, checkInputValidity, hasInvalidInput, toggleButtonState, clearValidation, enableValidation, validationConfig } from './validation.js';
-  import { apiCardAdd, apiCardDelete, getInitialCards, profileEdit, updatingUserAvatar, userInfo } from './api.js'
+import '../pages/index.css';
+import { apiCardAdd, deleteLike, getInitialCards, profileEdit, putLike, updatingUserAvatar, userInfo } from './api.js';
+import { cardDelete, cardsAdd } from './card.js';
+import { popupClose, popupCloseOverlay, popupOpen } from './modal.js';
+import { clearValidation, enableValidation, validationConfig } from './validation.js';
 
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
@@ -28,52 +26,44 @@ const formEditProfileImage = document.forms.edit_profile_image;
 const nameInput = formEditProfile.querySelector('.popup__input_type_name');
 const jobInput = formEditProfile.querySelector('.popup__input_type_description');
 const avatarInput = formEditProfileImage.querySelector('.popup__input_type_url');
+const profileImage = document.querySelector('.profile__image');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const inputNameCardForm = formCardAdd.querySelector('.popup__input_type_card-name');
 const inputUrlCardForm = formCardAdd.querySelector('.popup__input_type_url');
+const profileEditPopupButton = formEditProfile.querySelector('.popup__button');
+const cardAddPopupButton = formCardAdd.querySelector('.popup__button');
+const profileEditImagePopupButton = formEditProfileImage.querySelector('.popup__button');
+let userId
 
-// @todo: Получение информации о пользователе
-const userId = await userInfo().then(res => res._id);
+// @todo: Получение информации о пользователе + добавление карточек на страницу
+Promise.all([userInfo(), getInitialCards()])
+.then(([userData, cardsArray]) => {
+  userId = userData._id;
+  profileTitle.textContent = userData.name;
+  profileDescription.textContent = userData.about;
+  profileImage.style.backgroundImage = `url(${userData.avatar})`;
 
-Promise.all([userInfo().then((res) => {
-    profileTitle.textContent = res.name;
-    profileDescription.textContent = res.about;
-    document.querySelector('.profile__image').style.backgroundImage = `url(${res.avatar})`;
+  cardsArray.forEach((card) => {
+    placesList.append(cardsAdd(card, cardDelete, cardsLike, cardFullscreen, userId));
   })
-  .catch((err) => {
-    console.log(`Ошибка: ${err}`)
-  }),
-  // @todo: Вывести карточки на страницу
-  getInitialCards().then((cards) => {
-    cards.forEach((card) => {
-      placesList.append(cardsAdd(card, cardDelete, cardsLike, cardFullscreen, userId));
-    })
-  })
-  .catch((err) => {
-    console.log(`Ошибка: ${err}`)
-  })])
-  .then(() => {
-    console.log('Все получено!');
-  })
+})
+.catch(err => console.log(`Ошибка: ${err}`))
+
 
 // @todo: Функция загрузки рендеринга
-function renderLoading(isLoading) {
+function renderLoading(button, isLoading) {
   if (isLoading) {
-    document.querySelectorAll('.popup__button').forEach((item) => {
-      item.textContent = 'Сохранение...';
-    })
+    button.textContent = 'Сохранение...';
   } else {
-    document.querySelectorAll('.popup__button').forEach((item) => {
-      item.textContent = 'Сохранить';
-    })
+    button.textContent = 'Сохранить';
   }
 }
 
 // @todo: Функция редактирования профиля(имя и информация о себе)
 function handleFormEditProfileSubmit (evt) {
   evt.preventDefault();
-  renderLoading(true);
+  renderLoading(profileEditPopupButton, true);
   const profile = {
     name: nameInput.value,
     about: jobInput.value,
@@ -88,46 +78,41 @@ function handleFormEditProfileSubmit (evt) {
     console.log(`Ошибка: ${err}`)
   })
   .finally(() => {
-    renderLoading(false);
+    renderLoading(profileEditPopupButton, false);
   })
 };
 
 // @todo: Функция редактирования аватарки
 function handleFormImageSubmit (evt) {
   evt.preventDefault();
-  renderLoading(true);
+  renderLoading(profileEditImagePopupButton, true);
   const link = {
     avatar: avatarInput.value
   }
   updatingUserAvatar(link)
   .then((link) => {
-    document.querySelector('.profile__image').style.backgroundImage = `url(${link.avatar})`;
+    profileImage.style.backgroundImage = `url(${link.avatar})`;
     popupClose(popupEditProfileImage);
   })
   .catch((err) => {
     console.log(`Ошибка: ${err}`)
   })
   .finally(() => {
-    renderLoading(false);
+    renderLoading(profileEditImagePopupButton, false);
   })
 };
 
 // @todo: Функция открытия картинки
-function cardFullscreen (evt, name) {
-  const cardImage = evt.target.closest('.card__image');
-  const cards = evt.target.closest('.card');
-  const cardTitle = cards.querySelector('.card__title');
-  popupImage.src = cardImage.src;
-  popupCardCaption.textContent = cardTitle.textContent;
-  cards.querySelector('.card__title').textContent = name;
-  cards.querySelector('.card__image').alt = name;
+function cardFullscreen (name, image) {
+  popupImage.src = image.src;
+  popupCardCaption.textContent = name;
   popupOpen(popupModalTypeImage);
 }
 
 // @todo: Функция добавления карточки
 function handleFormCardSubmit (evt) {
   evt.preventDefault();
-  renderLoading(true);
+  renderLoading(cardAddPopupButton, true);
   const newCard = {
     name: inputNameCardForm.value,
     link: inputUrlCardForm.value
@@ -142,30 +127,37 @@ function handleFormCardSubmit (evt) {
     console.log(`Ошибка: ${err}`)
   })
   .finally(() => {
-    renderLoading(false);
+    renderLoading(cardAddPopupButton, false);
   })
+}
+
+// @todo: Функция лайка карточки
+function cardsLike (likeButton, cardId, like) {
+  if (!likeButton.classList.contains('card__like-button_is-active')) {
+    putLike(cardId).then(card => like.textContent = card.likes.length).then((button) => {
+      button = likeButton.classList.add('card__like-button_is-active')
+    }).catch(err => console.log(`Ошибка: ${err}`))
+  } else if (likeButton.classList.contains('card__like-button_is-active')) {
+    deleteLike(cardId).then(card => like.textContent = card.likes.length).then((button) => {
+      button = likeButton.classList.remove('card__like-button_is-active')
+    }).catch(err => console.log(`Ошибка: ${err}`))
+  }
 }
 
 // @todo: Обработчики клика открытия попапа
 profileEditButton.addEventListener('click', () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
-  enableValidation(validationConfig);
   clearValidation(formEditProfile, validationConfig);
   popupOpen(popupEditProfile);
 });
 
 profileAddButton.addEventListener('click', () => {
   formCardAdd.reset();
-  clearValidation(formCardAdd, validationConfig)
-  enableValidation(validationConfig);
-  clearValidation(formCardAdd, validationConfig);
   popupOpen(popupNewCard);
 });
 
 profileEditImageButton.addEventListener('click', () => {
-  enableValidation(validationConfig);
-  clearValidation(formEditProfileImage, validationConfig);
   popupOpen(popupEditProfileImage);
 })
 
@@ -194,3 +186,7 @@ formEditProfileImage.addEventListener('submit', handleFormImageSubmit);
 
 // @todo: Вызов функции валидации форм
 enableValidation(validationConfig);
+clearValidation(formEditProfile, validationConfig)
+
+export { cardFullscreen, cardTemplate, cardsLike, formCardAdd, formEditProfile, handleFormCardSubmit, jobInput, nameInput, placesList, popupAll, popupCardCaption, popupCloseButtons, popupEditProfile, popupImage, popupModalTypeImage, popupNewCard, profileAddButton, profileEditButton };
+
