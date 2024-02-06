@@ -41,4 +41,13 @@ function showLike (cardObject, likeButton, userId) {
   }
 }
 
-export { cardDelete, cardsAdd, cardsLike };
+// @todo: Функция переключения кнопки лайка
+function changeLike(likeButton) {
+  if (!likeButton.classList.contains('card__like-button_is-active')) {
+    likeButton.classList.add('card__like-button_is-active');
+  } else {
+    likeButton.classList.remove('card__like-button_is-active');
+  }
+}
+
+export { cardDelete, cardsAdd, cardsLike, showLike, changeLike };

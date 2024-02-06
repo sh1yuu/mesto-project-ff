@@ -1,6 +1,6 @@
 import '../pages/index.css';
 import { apiCardAdd, deleteLike, getInitialCards, profileEdit, putLike, updatingUserAvatar, userInfo } from './api.js';
-import { cardDelete, cardsAdd } from './card.js';
+import { cardDelete, cardsAdd, changeLike } from './card.js';
 import { popupClose, popupCloseOverlay, popupOpen } from './modal.js';
 import { clearValidation, enableValidation, validationConfig } from './validation.js';
 
@@ -113,7 +113,7 @@ function cardFullscreen (name, image) {
 function handleFormCardSubmit (evt) {
   evt.preventDefault();
   renderLoading(cardAddPopupButton, true);
-  const newCard = {
+  let newCard = {
     name: inputNameCardForm.value,
     link: inputUrlCardForm.value
   }
@@ -134,13 +134,9 @@ function handleFormCardSubmit (evt) {
 // @todo: Функция лайка карточки
 function cardsLike (likeButton, cardId, like) {
   if (!likeButton.classList.contains('card__like-button_is-active')) {
-    putLike(cardId).then(card => like.textContent = card.likes.length).then((button) => {
-      button = likeButton.classList.add('card__like-button_is-active')
-    }).catch(err => console.log(`Ошибка: ${err}`))
+    putLike(cardId).then(card => like.textContent = card.likes.length).then(res => changeLike(likeButton)).catch(err => console.log(`Ошибка: ${err}`))
   } else if (likeButton.classList.contains('card__like-button_is-active')) {
-    deleteLike(cardId).then(card => like.textContent = card.likes.length).then((button) => {
-      button = likeButton.classList.remove('card__like-button_is-active')
-    }).catch(err => console.log(`Ошибка: ${err}`))
+    deleteLike(cardId).then(card => like.textContent = card.likes.length).then(res => changeLike(likeButton)).catch(err => console.log(`Ошибка: ${err}`))
   }
 }
 
